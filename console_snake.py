@@ -20,21 +20,20 @@ def gen_field(WIDTH: int, HEIGHT: int) -> list:
     """
     generates the snake field
     """
-    # BASIC FIELD GENERATION
-    field = [["." for i in range(WIDTH)] for i in range(HEIGHT)]
+    # field generation
+    field = list()
+
+    for i in range(HEIGHT):
+        if i == 0 or i == HEIGHT - 1:
+            field.append(["*" for i in range(WIDTH)])
+        else:
+            row = ["*"] + [" " for i in range(WIDTH-2)] + ["*"]
+            field.append(row)
 
     return field
 
 field = gen_field(WIDTH, HEIGHT)
 
-
-
-# alternative field generation
-# alt_field = [[] for i in range(HEIGHT)] # TODO: hm
-
-# for i in range(WIDTH):
-#     alt_field[0].append("*")
-#     alt_field[-1].append("*")
 
 
 def repos_snake(snake: list, field: list) -> list:
@@ -58,9 +57,7 @@ if __name__ == "__main__":
         os.system("cls" if os.name == "nt" else "clear")
 
         # reset field
-        for row in field:
-            for i in range(len(row)):
-                row[i] = "."
+        field = gen_field(WIDTH, HEIGHT)
 
         
         field = repos_snake(snake, field)
