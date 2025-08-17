@@ -5,16 +5,17 @@ import time
 import msvcrt   # Windows specific
 
 # CONTANTS
-WIDTH = 30
+WIDTH = 50
 HEIGHT = 10
 
 running = True
-direction = "w"
+direction = "d"
 
 # this list contains the snakes position
 # also start position
+# example: [[5, 15], [5, 16], [5, 17], [5, 18], [5, 19]]
 snake = [[HEIGHT//2, WIDTH//2+i] for i in range(5)]
-
+print(snake)
 
 
 def gen_field(WIDTH: int, HEIGHT: int) -> list:
@@ -47,18 +48,31 @@ def calc_snake(snake: list, direction: str, width: int, height: int)-> list:
         # wasd - top/left/down/right
         case "d":
             # take the farthest position and extend it to the right
-            snake.append([snake[-1][0], (snake[-1][1]+1%width)])
+            snake.append([snake[-1][0], (snake[-1][1]+1)])
         case "a":
-            snake.append([snake[-1][0], (snake[-1][1]-1%width)])
+            snake.append([snake[-1][0], (snake[-1][1]-1)])
         case "w":
-            snake.append([(snake[-1][0]-1%height), snake[-1][1]])
+            snake.append([(snake[-1][0]-1), snake[-1][1]])
         case "s":
-            snake.append([(snake[-1][0]+1)%height, snake[-1][1]])
+            snake.append([(snake[-1][0]+1), snake[-1][1]])
     
     return snake
 
+def check_collision(snake: list, width: int, height: int) -> bool:
+    """
+    checks for collision
+    """
+    snakehead = snake[-1]   # which is a list of 2 numbers (coordinates)
 
-def repos_snake(snake: list, field: list) -> list:
+    if snakehead[0] == 0 or snakehead[0] == height-1 or \
+       snakehead[1] == 0 or snakehead[1] == width-1:
+        return True
+    else:
+        return False
+    
+
+
+def draw_snake(snake: list, field: list) -> list:
     """
     handles the reposition logic
     """
@@ -75,27 +89,31 @@ def repos_snake(snake: list, field: list) -> list:
 if __name__ == "__main__":
 
     while running:
+
         # wipe screen for update
         os.system("cls" if os.name == "nt" else "clear")
 
         # reset field
         field = gen_field(WIDTH, HEIGHT)
 
+
+
+        snake = calc_snake(snake, direction, WIDTH, HEIGHT)
+
+        field = draw_snake(snake, field)
         
-        field = repos_snake(snake, field)
-
-
         for row in field:
             print("".join(row))
 
-        # reposition snake
-        # del snake[0]
-        # # append the last farthest position + 1 and mod for travelling through the edge
-        # snake.append([(snake[-1][0])%WIDTH, (snake[-1][1]+1)%WIDTH])
+        if check_collision(snake, WIDTH, HEIGHT) == True:
+            running = False
+
 
         if msvcrt.kbhit():  # checks for keypress
             direction = msvcrt.getch().decode("utf-8")
             
-        snake = calc_snake(snake, direction, WIDTH, HEIGHT)
 
-        time.sleep(0.4)
+        time.sleep(0.3)
+
+
+print("game over")
