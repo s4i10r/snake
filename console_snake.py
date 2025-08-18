@@ -58,9 +58,9 @@ def calc_snake(snake: list, direction: str, width: int, height: int)-> list:
     
     return snake
 
-    
 
-def check_collisionV2(snake: list, field: list, direction: str) -> bool:
+
+def check_collision(snake: list, field: list, direction: str) -> bool:
     """
     checks for collision
     """
@@ -95,6 +95,31 @@ def draw_snake(snake: list, field: list) -> list:
     return field
 
 
+def spawn_fruit(field: list, snake:list, width: int, height: int) -> list:
+    """
+    spawns a fruit on the field based on the snakes position
+    """
+
+    seed_1: int = 0
+    seed_2: int = 0
+
+    for i in range(len(snake)):
+        seed_1 += snake[i][0]
+        seed_2 += snake[i][1]
+
+    seed_1 %= height
+    seed_2 %= width
+
+    while field[seed_1][seed_2] != " ":
+        seed_1 = (seed_1 + 1) % height
+        seed_2 = (seed_2 + 2) % width
+
+    field[seed_1][seed_2] = "@"
+
+    return field
+
+
+
 # MAIN LOOP
 
 if __name__ == "__main__":
@@ -111,13 +136,17 @@ if __name__ == "__main__":
 
         snake = calc_snake(snake, direction, WIDTH, HEIGHT)
 
+        
+
         field = draw_snake(snake, field)
+
+        field = spawn_fruit(field, snake, WIDTH, HEIGHT)
         
         for row in field:
             print("".join(row))
 
 
-        if check_collisionV2(snake, field, direction) == True:
+        if check_collision(snake, field, direction) == True:
             running = False
 
             
