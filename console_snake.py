@@ -58,18 +58,29 @@ def calc_snake(snake: list, direction: str, width: int, height: int)-> list:
     
     return snake
 
-def check_collision(snake: list, width: int, height: int) -> bool:
+    
+
+def check_collisionV2(snake: list, field: list, direction: str) -> bool:
     """
     checks for collision
     """
     snakehead = snake[-1]   # which is a list of 2 numbers (coordinates)
 
-    if snakehead[0] == 0 or snakehead[0] == height-1 or \
-       snakehead[1] == 0 or snakehead[1] == width-1:
+    match direction:
+        case "w":
+            next_spot = field[snakehead[0]-1][snakehead[1]]
+        case "a":
+            next_spot = field[snakehead[0]][snakehead[1]-1]
+        case "s":
+            next_spot = field[snakehead[0]+1][snakehead[1]]
+        case "d":
+            next_spot = field[snakehead[0]][snakehead[1]+1]
+
+    if next_spot in "-|o":
         return True
-    else:
-        return False
     
+    return False
+
 
 
 def draw_snake(snake: list, field: list) -> list:
@@ -105,10 +116,11 @@ if __name__ == "__main__":
         for row in field:
             print("".join(row))
 
-        if check_collision(snake, WIDTH, HEIGHT) == True:
+
+        if check_collisionV2(snake, field, direction) == True:
             running = False
 
-
+            
         if msvcrt.kbhit():  # checks for keypress
             direction = msvcrt.getch().decode("utf-8")
             
